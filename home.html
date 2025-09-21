@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Claim 0.00001 DGB</title>
+  <title>Claim 1 DGB</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -22,64 +22,63 @@
       width: 320px;
       text-align: center;
     }
-    input[type="email"] {
-      width: 90%;
-      padding: 10px;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+    h2 { margin-top: 0; }
+    input, button {
+      width: 100%;
+      padding: .7rem;
+      margin-top: .5rem;
+      font-size: 1rem;
     }
     button {
-      background-color: #28a745;
+      background: #4caf50;
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
       cursor: pointer;
-      font-size: 16px;
     }
     button:hover {
-      background-color: #218838;
+      background: #45a049;
     }
     #result {
       margin-top: 1rem;
-      font-size: 14px;
+      font-size: .9rem;
+      min-height: 1.2em;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Claim 0.00001 DGB</h2>
-    <input type="email" id="email" placeholder="Enter your FaucetPay email">
-    <br>
-    <button onclick="claim()">Claim</button>
-    <p id="result"></p>
+    <h2>Claim 1 DGB</h2>
+    <input type="email" id="email" placeholder="Your FaucetPay email">
+    <button onclick="claim()">Send 1 DGB</button>
+    <div id="result"></div>
   </div>
 
   <script>
     async function claim() {
-      const email = document.getElementById('email').value.trim();
+      const email = document.getElementById("email").value.trim();
+      const resultDiv = document.getElementById("result");
       if (!email) {
-        document.getElementById('result').innerText = 'Please enter your email.';
+        resultDiv.textContent = "Enter your FaucetPay email.";
         return;
       }
-
-      document.getElementById('result').innerText = 'Processing…';
-
+      resultDiv.textContent = "Sending 1 DGB…";
       try {
-        const res = await fetch('https://pvfvplaufesdoqinuogn.supabase.co/functions/v1/claim-dgb', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const resp = await fetch("https://pvfvplaufesdoqinuogn.supabase.co/functions/v1/claim-dgb", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email })
         });
-
-        const data = await res.json();
-        // FaucetPay typically returns {status:200, message:"...", ...}
-        document.getElementById('result').innerText = data.message || JSON.stringify(data);
+        const data = await resp.json();
+        if (resp.ok) {
+          // Your function should return a message or the FaucetPay API data
+          resultDiv.textContent = data.message || "Sent successfully!";
+        } else {
+          resultDiv.textContent = "Error: " + JSON.stringify(data);
+        }
       } catch (err) {
-        document.getElementById('result').innerText = 'Error: ' + err.message;
+        resultDiv.textContent = "Request failed: " + err;
       }
     }
   </script>
 </body>
-  </html>
+</html>
